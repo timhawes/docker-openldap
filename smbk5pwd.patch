@@ -1,0 +1,12 @@
+diff -ruN openldap-2.4.44/contrib/slapd-modules/smbk5pwd/smbk5pwd.c openldap-2.4.44.smbk5pwd-fix/contrib/slapd-modules/smbk5pwd/smbk5pwd.c
+--- openldap-2.4.44/contrib/slapd-modules/smbk5pwd/smbk5pwd.c	2016-02-05 23:57:45.000000000 +0000
++++ openldap-2.4.44.smbk5pwd-fix/contrib/slapd-modules/smbk5pwd/smbk5pwd.c	2016-05-11 21:15:17.775462232 +0100
+@@ -464,7 +464,7 @@
+ 		}
+ 
+ 		ret = hdb_generate_key_set_password(context, ent.principal,
+-			qpw->rs_new.bv_val, &ent.keys.val, &nkeys);
++			qpw->rs_new.bv_val, NULL, 0, &ent.keys.val, &nkeys);
+ 		ent.keys.len = nkeys;
+ 		hdb_seal_keys(context, db, &ent);
+ 		krb5_free_principal( context, ent.principal );
