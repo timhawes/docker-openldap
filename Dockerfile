@@ -4,8 +4,8 @@ ENV OPENLDAP_VERSION 2.4.44
 ENV OPENLDAP_SHA1 016a738d050a68d388602a74b5e991035cdba149
 
 COPY smbk5pwd.patch /usr/src/smbk5pwd.patch
-RUN installDeps='libicu52 libkadm5srv8-heimdal libkrb5-26-heimdal libltdl7 libsasl2-2 libslp1 libssl1.0.0 unixodbc' \
-    && buildDeps='build-essential file groff-base heimdal-dev libdb-dev libicu-dev libltdl-dev libperl-dev libsasl2-dev libslp-dev libssl-dev unixodbc-dev wget' \
+RUN installDeps='libicu52 libkadm5srv8-heimdal libkrb5-26-heimdal libltdl7 libsasl2-2 libslp1 libssl1.0.0' \
+    && buildDeps='build-essential file groff-base heimdal-dev libdb-dev libicu-dev libltdl-dev libsasl2-dev libslp-dev libssl-dev wget' \
     && apt-get update \
     && apt-get install -y --no-install-recommends $buildDeps $installDeps \
     && cd /usr/src \
@@ -29,8 +29,18 @@ RUN installDeps='libicu52 libkadm5srv8-heimdal libkrb5-26-heimdal libltdl7 libsa
         --enable-rlookups \
         --enable-slapi \
         --enable-slp \
-        --enable-backends=mod \
-        --enable-ndb=no \
+        --enable-backends=no \
+        --enable-bdb=mod \
+        --enable-dnssrv=mod \
+        --enable-hdb=mod \
+        --enable-ldap=mod \
+        --enable-mdb=mod \
+        --enable-meta=mod \
+        --enable-monitor=mod \
+        --enable-null=mod \
+        --enable-passwd=mod \
+        --enable-relay=mod \
+        --enable-sock=mod \
         --enable-overlays=mod \
         --with-threads \
         --with-tls \
