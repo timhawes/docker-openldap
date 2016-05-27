@@ -1,0 +1,5 @@
+dn: @@LDAP_SUFFIX@@
+objectClass: top
+objectClass: dcObject
+objectClass: domain
+dc: @@LDAP_DOMAIN_FIRSTPART@@

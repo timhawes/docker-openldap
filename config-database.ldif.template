@@ -1,0 +1,10 @@
+dn: olcDatabase=mdb,cn=config
+objectClass: olcDatabaseConfig
+objectClass: olcMdbConfig
+olcDatabase: mdb
+olcSuffix: @@LDAP_SUFFIX@@
+olcDbDirectory: /var/lib/ldap/@@LDAP_SUFFIX@@
+olcRootDN: cn=admin,@@LDAP_SUFFIX@@
+olcRootPW: @@LDAP_ROOT_PASSWORD@@
+olcDbIndex: objectClass eq
+olcAccess: to * by users read

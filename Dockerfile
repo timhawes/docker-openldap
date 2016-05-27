@@ -51,6 +51,14 @@ RUN installDeps='libicu52 libkadm5srv8-heimdal libkrb5-26-heimdal libltdl7 libsa
     && cd /usr/src \
     && rm -rf openldap-$OPENLDAP_VERSION \
     && apt-get purge -y --auto-remove $buildDeps \
-    && rm -rf /var/lib/apt/lists/*
+    && rm -rf /var/lib/apt/lists/* \
+    && useradd -r -s /sbin/nologin -d /nonexistant ldap \
+    && ln -s /usr/local/libexec/openldap /usr/lib/ldap \
+    && ln -s /usr/local/etc/openldap/schema /etc/ldap/schema
+COPY samba.ldif /usr/local/etc/openldap/schema/samba.ldif
+COPY entrypoint.sh /entrypoint.sh
+COPY *.ldif.template /etc/ldap/
 
+ENTRYPOINT ["/entrypoint.sh"]
+VOLUME ["/etc/ldap/slapd.d", "/var/lib/ldap"]
 EXPOSE 389 636
