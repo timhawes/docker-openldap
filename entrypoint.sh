@@ -8,9 +8,10 @@ if [ -z "$LDAP_ROOT_PASSWORD" ]; then
   LDAP_ROOT_PASSWORD=password
 fi
 
+mkdir -p /etc/ldap/slapd.d /var/lib/ldap /var/run/slapd
+
 if [ ! -d "/etc/ldap/slapd.d/cn=config" ]; then
   echo "Setting up configuration database"
-  mkdir -p /etc/ldap/slapd.d /var/lib/ldap /var/run/slapd
   if [ -n "$LDAP_DOMAIN" ]; then
     LDAP_SUFFIX="dc=$(echo $LDAP_DOMAIN | sed 's/\./,dc=/g')"
     LDAP_DOMAIN_FIRSTPART="$(echo $LDAP_DOMAIN | cut -d. -f1)"
