@@ -4,6 +4,8 @@ if [ "$1" = "bash" ]; then
   exec bash
 fi
 
+ulimit -n 1024
+
 if [ -z "$LDAP_ROOT_PASSWORD" ]; then
   LDAP_ROOT_PASSWORD=password
 fi
