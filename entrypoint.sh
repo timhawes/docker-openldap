@@ -10,6 +10,10 @@ if [ -z "$LDAP_ROOT_PASSWORD" ]; then
   LDAP_ROOT_PASSWORD=password
 fi
 
+if [ -z "$LDAP_DEBUG" ]; then
+  LDAP_DEBUG=0
+fi
+
 mkdir -p /etc/ldap/slapd.d /var/lib/ldap /var/run/slapd
 
 if [ ! -d "/etc/ldap/slapd.d/cn=config" ]; then
@@ -41,4 +45,4 @@ echo "Fixing permissions"
 chown -R ldap:ldap /etc/ldap/slapd.d /var/lib/ldap /var/run/slapd
 
 echo "Starting slapd"
-/usr/local/libexec/slapd -d 0 -F /etc/ldap/slapd.d -u ldap -g ldap -h "ldap:/// ldapi:///"
+/usr/local/libexec/slapd -d $LDAP_DEBUG -F /etc/ldap/slapd.d -u ldap -g ldap -h "ldap:/// ldaps:/// ldapi:///"
