@@ -1,7 +1,7 @@
 FROM debian:jessie
 
-ENV OPENLDAP_VERSION 2.4.44
-ENV OPENLDAP_SHA1 016a738d050a68d388602a74b5e991035cdba149
+ENV OPENLDAP_VERSION 2.4.45
+ENV OPENLDAP_SHA1 c98437385d3eaee80c9e2c09f3f0d4b7c140233d
 
 COPY smbk5pwd.patch /usr/src/smbk5pwd.patch
 RUN installDeps='libicu52 libkadm5srv8-heimdal libkrb5-26-heimdal libltdl7 libsasl2-2 libslp1 libssl1.0.0 ca-certificates' \
