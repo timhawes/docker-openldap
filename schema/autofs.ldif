@@ -1,0 +1,13 @@
+dn: cn=autofs,cn=schema,cn=config
+objectClass: olcSchemaConfig
+olcAttributeTypes: {0}( 1.3.6.1.1.1.1.25 NAME 'automountInformation'
+        DESC 'Information used by the autofs automounter'
+        EQUALITY caseExactIA5Match
+        SYNTAX 1.3.6.1.4.1.1466.115.121.1.26 SINGLE-VALUE )
+olcObjectClasses: {0}( 1.3.6.1.1.1.1.13 NAME 'automount' SUP top STRUCTURAL
+        DESC 'An entry in an automounter map'
+        MUST ( cn $ automountInformation $ objectclass )
+        MAY ( description ) )
+olcObjectClasses: {1}( 1.3.6.1.4.1.2312.4.2.2 NAME 'automountMap' SUP top STRUCTURAL
+        DESC 'An group of related automount objects'
+        MUST ( ou ) )

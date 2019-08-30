@@ -1,11 +1,10 @@
-FROM debian:jessie
+FROM debian:buster
 
 ENV OPENLDAP_VERSION 2.4.48
 ENV OPENLDAP_SHA1 c1984e80f6db038b317bf931866adb38e5537dcd
 
-COPY smbk5pwd.patch /usr/src/smbk5pwd.patch
-RUN installDeps='libicu52 libkadm5srv8-heimdal libkrb5-26-heimdal libltdl7 libsasl2-2 libslp1 libssl1.0.0 ca-certificates' \
-    && buildDeps='build-essential file groff-base heimdal-dev libdb-dev libicu-dev libltdl-dev libsasl2-dev libslp-dev libssl-dev wget' \
+RUN installDeps='libhdb9-heimdal libicu63 libkadm5srv8-heimdal libkrb5-26-heimdal libltdl7 libsasl2-2 libssl1.1 ca-certificates' \
+    && buildDeps='build-essential file groff-base heimdal-dev libdb-dev libicu-dev libltdl-dev libsasl2-dev libssl-dev wget' \
     && apt-get update \
     && apt-get install -y --no-install-recommends $buildDeps $installDeps \
     && cd /usr/src \
@@ -14,7 +13,6 @@ RUN installDeps='libicu52 libkadm5srv8-heimdal libkrb5-26-heimdal libltdl7 libsa
     && tar xfz openldap-$OPENLDAP_VERSION.tgz \
     && rm -f openldap-$OPENLDAP_VERSION.tgz \
     && cd openldap-$OPENLDAP_VERSION \
-    && patch -p1 <../smbk5pwd.patch \
     && ./configure \
         --prefix=/usr/local \
         --enable-slapd \
@@ -28,7 +26,6 @@ RUN installDeps='libicu52 libkadm5srv8-heimdal libkrb5-26-heimdal libltdl7 libsa
         --enable-rewrite \
         --enable-rlookups \
         --enable-slapi \
-        --enable-slp \
         --enable-backends=no \
         --enable-bdb=mod \
         --enable-dnssrv=mod \
@@ -47,18 +44,20 @@ RUN installDeps='libicu52 libkadm5srv8-heimdal libkrb5-26-heimdal libltdl7 libsa
     && make -j$(nproc) \
     && make install \
     && cd contrib/slapd-modules/smbk5pwd \
-    && make install \
+    && make install HEIMDAL_INC=-I/usr/include/heimdal HEIMDAL_LIB="-L/usr/lib/x86_64-linux-gnu/heimdal -lkrb5 -lkadm5srv" \
     && cd /usr/src \
     && rm -rf openldap-$OPENLDAP_VERSION \
     && apt-get purge -y --auto-remove $buildDeps \
     && rm -rf /var/lib/apt/lists/* \
     && useradd -r -s /sbin/nologin -d /nonexistant ldap \
     && ln -s /usr/local/libexec/openldap /usr/lib/ldap \
-    && ln -s /usr/local/etc/openldap/schema /etc/ldap/schema
-COPY samba.ldif /usr/local/etc/openldap/schema/samba.ldif
-COPY entrypoint.sh /entrypoint.sh
-COPY *.ldif.template /etc/ldap/
+    && ln -s /usr/local/etc/openldap/schema /etc/ldap/schema \
+    && ls -sf /etc/ldap/ldap.conf /usr/local/etc/openldap/ldap.conf
+COPY schema/*.ldif /usr/local/etc/openldap/schema/
+COPY ldap.conf /etc/ldap/ldap.conf
+COPY cn=config.ldif /docker-entrypoint-initdb.d/pre/cn=config.ldif
+COPY docker-entrypoint.sh /docker-entrypoint.sh
 
-ENTRYPOINT ["/entrypoint.sh"]
+ENTRYPOINT ["/docker-entrypoint.sh"]
 VOLUME ["/etc/ldap/slapd.d", "/var/lib/ldap"]
 EXPOSE 389 636
