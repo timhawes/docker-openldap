@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -x
+set -e
 
 if [ "$1" = "bash" ]; then
   exec bash
@@ -21,8 +21,8 @@ else
 fi
 
 if [ "$ldap_configured" = "no" ]; then
-  echo "Restoring LDIF files..."
   if [ -f /docker-entrypoint-initdb.d/ldif/cn=config.ldif ]; then
+    echo "Restoring /docker-entrypoint-initdb.d/ldif/cn=config.ldif"
     dirs=$(grep ^olcDbDirectory: </docker-entrypoint-initdb.d/ldif/cn=config.ldif | cut -d" " -f2-)
     if [ -n "$dirs" ]; then
       mkdir -p $dirs
@@ -32,8 +32,13 @@ if [ "$ldap_configured" = "no" ]; then
   fi
   for f in /docker-entrypoint-initdb.d/ldif/*; do
     case "$f" in
-      /docker-entrypoint-initdb.d/ldif/cn=config.ldif) true;;
-      *.ldif) slapadd -F /etc/ldap/slapd.d -b $(basename $f .ldif) <"$f";;
+      /docker-entrypoint-initdb.d/ldif/cn=config.ldif)
+        true
+        ;;
+      *.ldif)
+        echo "Restoring $f"
+        slapadd -F /etc/ldap/slapd.d -b $(basename $f .ldif) <"$f"
+        ;;
     esac
   done
 fi
@@ -44,16 +49,24 @@ chown -R ldap:ldap /etc/ldap/slapd.d /var/lib/ldap /var/run/slapd
 echo "Starting slapd"
 /usr/local/libexec/slapd -d $LDAP_DEBUG -F /etc/ldap/slapd.d -u ldap -g ldap -h "ldap:/// ldaps:/// ldapi:///" &
 
-if [ "$ldap_configured" = "no" ]; then
-  echo "Running post scripts..."
-  sleep 2
-  for f in /docker-entrypoint-initdb.d/post/*; do
-    case "$f" in
-      *.ldif) ldapadd -H ldapi:/// <"$f";;
-      *.sh) . "$f";;
-    esac
-  done
-fi
+sleep 2
 
+echo "Running post scripts..."
+for f in /docker-entrypoint-initdb.d/post/*; do
+  if [ -f "$f" ]; then
+    case "$f" in
+      *.ldif)
+        echo "Loading $f"
+        ldapadd -H ldapi:/// <"$f"
+        ;;
+      *.sh)
+        echo "Running $f"
+        . "$f"
+        ;;
+    esac
+  fi
+done
+
+echo "Waiting for slapd to exit..."
 trap 'kill %1' TERM INT
 wait

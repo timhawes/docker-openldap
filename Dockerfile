@@ -55,7 +55,7 @@ RUN installDeps='libhdb9-heimdal libicu63 libkadm5srv8-heimdal libkrb5-26-heimda
     && ls -sf /etc/ldap/ldap.conf /usr/local/etc/openldap/ldap.conf
 COPY schema/*.ldif /usr/local/etc/openldap/schema/
 COPY ldap.conf /etc/ldap/ldap.conf
-COPY cn=config.ldif /docker-entrypoint-initdb.d/pre/cn=config.ldif
+COPY cn=config.ldif /docker-entrypoint-initdb.d/ldif/cn=config.ldif
 COPY docker-entrypoint.sh /docker-entrypoint.sh
 
 ENTRYPOINT ["/docker-entrypoint.sh"]
