@@ -44,7 +44,7 @@ RUN installDeps='libhdb9-heimdal libicu63 libkadm5srv8-heimdal libkrb5-26-heimda
     && make -j$(nproc) \
     && make install \
     && cd contrib/slapd-modules/smbk5pwd \
-    && make install HEIMDAL_INC=-I/usr/include/heimdal HEIMDAL_LIB="-L/usr/lib/x86_64-linux-gnu/heimdal -lkrb5 -lkadm5srv" \
+    && make install HEIMDAL_INC="-I/usr/include/heimdal $(krb5-config.heimdal --cflags kadm-server)" HEIMDAL_LIB="-L/usr/heimdal/lib -lkrb5 -lkadm5srv $(krb5-config.heimdal --libs kadm-server)" \
     && cd /usr/src \
     && rm -rf openldap-$OPENLDAP_VERSION \
     && apt-get purge -y --auto-remove $buildDeps \
