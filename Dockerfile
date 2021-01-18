@@ -1,7 +1,7 @@
 FROM debian:buster
 
-ENV OPENLDAP_VERSION 2.4.56
-ENV OPENLDAP_SHA1 4c617b87bd50ef8d071e7deb7525af79b08d4910
+ENV OPENLDAP_VERSION 2.4.57
+ENV OPENLDAP_SHA1 1cffa70a3ea8545948041fd113f8f53bc24d6d87
 
 RUN installDeps='libhdb9-heimdal libicu63 libkadm5srv8-heimdal libkrb5-26-heimdal libltdl7 libsasl2-2 libssl1.1 ca-certificates' \
     && buildDeps='build-essential file groff-base heimdal-dev libdb-dev libicu-dev libltdl-dev libsasl2-dev libssl-dev wget' \
