@@ -4,8 +4,8 @@ ENV OPENLDAP_VERSION 2.6.1
 
 COPY gpg-pubkey.txt /usr/src/
 
-RUN installDeps='ca-certificates libargon2-1 libevent-2.1-7 libevent-core-2.1-7 libevent-extra-2.1-7 libevent-openssl-2.1-7 libevent-pthreads-2.1-7 libhdb9-heimdal libicu67 libkadm5srv8-heimdal libkrb5-26-heimdal libltdl7 libsasl2-2 libssl1.1 libwiredtiger0 libwrap0' \
-    && buildDeps='build-essential file gnupg groff-base heimdal-dev libargon2-dev libdb-dev libevent-dev libicu-dev libltdl-dev libsasl2-dev libssl-dev libwiredtiger-dev libwrap0-dev pkg-config wget' \
+RUN installDeps='ca-certificates libargon2-1 libevent-2.1-7 libevent-core-2.1-7 libevent-extra-2.1-7 libevent-openssl-2.1-7 libevent-pthreads-2.1-7 libhdb9-heimdal libicu67 libkadm5srv8-heimdal libkrb5-26-heimdal libltdl7 libsasl2-2 libssl1.1 libwrap0' \
+    && buildDeps='build-essential file gnupg groff-base heimdal-dev libargon2-dev libdb-dev libevent-dev libicu-dev libltdl-dev libsasl2-dev libssl-dev libwrap0-dev pkg-config wget' \
     && apt-get update \
     && apt-get install -y --no-install-recommends $buildDeps $installDeps \
     && cd /usr/src \
@@ -31,6 +31,7 @@ RUN installDeps='ca-certificates libargon2-1 libevent-2.1-7 libevent-core-2.1-7 
         --enable-backends=yes \
         --enable-perl=no \
         --enable-sql=no \
+        --enable-wt=no \
         --enable-overlays=yes \
         --enable-argon2=yes \
         --enable-balancer=yes \
