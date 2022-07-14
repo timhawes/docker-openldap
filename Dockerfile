@@ -1,6 +1,6 @@
 FROM debian:bullseye
 
-ENV OPENLDAP_VERSION 2.6.2
+ENV OPENLDAP_VERSION 2.6.3
 
 COPY gpg-pubkey.txt /usr/src/
 
